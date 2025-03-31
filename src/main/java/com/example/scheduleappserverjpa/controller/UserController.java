@@ -1,10 +1,12 @@
 package com.example.scheduleappserverjpa.controller;
 
-import com.example.scheduleappserverjpa.dto.user.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpRequestDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpResponseDto;
-import com.example.scheduleappserverjpa.dto.user.UpdateRequestDto;
+import com.example.scheduleappserverjpa.common.Const;
+import com.example.scheduleappserverjpa.dto.user.*;
 import com.example.scheduleappserverjpa.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -49,5 +51,38 @@ public class UserController {
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     userService.delete(id);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  // 로그인
+  @PostMapping("/login")
+  public ResponseEntity<Void> login(
+          @RequestBody LoginRequestDto dto,
+          HttpServletRequest request,
+          HttpServletResponse response) {
+    FindResponseDto findResponseDto = userService.login(dto); // 실패시 ? > 에러가 뜰거임.
+
+    // 세션을 만들어서.
+    HttpSession session = request.getSession();
+
+    // 로그인한 회원 정보를 저장하고.
+    session.setAttribute(Const.LOGIN_USER, findResponseDto);
+
+//    Cookie cookie = new Cookie("userId", String.valueOf(findResponseDto.getId()));
+
+    // Response Set-Cookie: userId=1 형태로 전달된다.
+
+//    response.addCookie(cookie);
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  // 로그아웃
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if(session != null) {
+      session.invalidate(); // 해당 세션(데이터)을 삭제한다.
+    }
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

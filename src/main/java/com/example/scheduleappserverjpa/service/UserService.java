@@ -1,9 +1,6 @@
 package com.example.scheduleappserverjpa.service;
 
-import com.example.scheduleappserverjpa.dto.user.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpRequestDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpResponseDto;
-import com.example.scheduleappserverjpa.dto.user.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.user.*;
 
 import java.util.List;
 
@@ -17,4 +14,6 @@ public interface UserService {
   void update(Long id, UpdateRequestDto dto);
 
   void delete(Long id);
+
+  FindResponseDto login(LoginRequestDto dto);
 }

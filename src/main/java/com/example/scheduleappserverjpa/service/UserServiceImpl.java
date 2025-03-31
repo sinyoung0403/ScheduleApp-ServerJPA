@@ -1,12 +1,10 @@
 package com.example.scheduleappserverjpa.service;
 
-import com.example.scheduleappserverjpa.dto.user.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpRequestDto;
-import com.example.scheduleappserverjpa.dto.user.SignUpResponseDto;
-import com.example.scheduleappserverjpa.dto.user.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.user.*;
 import com.example.scheduleappserverjpa.entity.User;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -65,5 +63,12 @@ public class UserServiceImpl implements UserService {
   public void delete(Long id) {
     User findUser = userRepository.findByIdOrElseThrow(id);
     userRepository.delete(findUser);
+  }
+
+  @Override
+  public FindResponseDto login(LoginRequestDto dto) {
+    // 아이디랑, 찾은 후에 ? return 해주면 됩니다.
+    User findUser = userRepository.findByEmailAndPwdOrElseThrow(dto.getEmail(), dto.getPwd());
+    return FindResponseDto.from(findUser);
   }
 }
