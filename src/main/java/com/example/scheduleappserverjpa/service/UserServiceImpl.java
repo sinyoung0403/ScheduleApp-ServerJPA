@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public void update(Long id, UpdateRequestDto dto) {
-    // id 를 먼저 찾기
-    User findUser = userRepository.findByIdOrElseThrow(id);
+    // id 를 먼저 찾기 , 단, id 와 pwd 동시에 찾기.
+    User findUser = userRepository.findByIdAndPwdOrElseThrow(id,dto.getPwd());
 
     // 그 후 update 해주기
     if (!dto.isValid()) {
@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void delete(Long id) {
-    User findUser = userRepository.findByIdOrElseThrow(id);
+  public void delete(Long id, DeleteRequestDto dto) {
+    User findUser = userRepository.findByIdAndPwdOrElseThrow(id, dto.getPwd());
     userRepository.delete(findUser);
   }
 

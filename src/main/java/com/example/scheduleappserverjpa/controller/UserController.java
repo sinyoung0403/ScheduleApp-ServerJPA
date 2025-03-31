@@ -56,8 +56,10 @@ public class UserController {
 
   // 유저 삭제
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable Long id) {
-    userService.delete(id);
+  public ResponseEntity<String> delete(
+          @PathVariable Long id,
+          @Valid @RequestBody DeleteRequestDto dto) {
+    userService.delete(id, dto);
     return ResponseEntity.status(HttpStatus.OK).body(id + " 유저를 삭제했습니다.");
   }
 
@@ -76,7 +78,7 @@ public class UserController {
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
-    if(session != null) {
+    if (session != null) {
       session.invalidate(); // 해당 세션(데이터)을 삭제한다.
     }
     return ResponseEntity.status(HttpStatus.OK).body("로그아웃 했습니다.");
