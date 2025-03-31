@@ -74,13 +74,19 @@ public class UserController {
     FindResponseDto findResponseDto = userService.login(dto);
     HttpSession session = request.getSession();
     session.setAttribute(Const.LOGIN_USER, findResponseDto);
+
+    System.out.println(request.getSession());
     return ResponseEntity.status(HttpStatus.OK).body("로그인했습니다.");
   }
 
   // 로그아웃
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
+
     HttpSession session = request.getSession(false);
+
+    FindResponseDto loginUser = (FindResponseDto) request.getSession().getAttribute("loginUser");
+    System.out.println(loginUser.getId());
     if (session != null) {
       session.invalidate(); // 해당 세션(데이터)을 삭제한다.
     }

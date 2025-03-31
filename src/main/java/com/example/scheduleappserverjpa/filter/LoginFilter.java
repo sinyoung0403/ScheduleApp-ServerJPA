@@ -16,7 +16,9 @@ public class LoginFilter implements Filter {
   private static final String[] WHITE_LIST = {"/", "/users/signup", "/users/login"};
 
   @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+  public void doFilter(ServletRequest servletRequest,
+                       ServletResponse servletResponse,
+                       FilterChain filterChain)
           throws IOException, ServletException {
     HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
     // request 에서 url 가져오기.

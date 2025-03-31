@@ -89,7 +89,6 @@ public class UserServiceImpl implements UserService {
     userRepository.delete(findUser);
   }
 
-  @Transactional
   @Override
   public FindResponseDto login(LoginRequestDto dto) {
     // 이메일에 맞는 유저 찾기
