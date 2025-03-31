@@ -14,15 +14,18 @@ public class User extends BaseEntity {
   private Long id;
 
   @Column(nullable = false)
-
   private String name;
 
   @Column(nullable = false, unique = true)
   private String email;
 
-  public User(String name, String email) {
+  @Column(nullable = false)
+  private String pwd;
+
+  public User(String name, String email, String pwd) {
     this.name = name;
     this.email = email;
+    this.pwd = pwd;
   }
 
   public void updateName(String name) {
