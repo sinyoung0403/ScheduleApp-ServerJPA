@@ -14,20 +14,19 @@ public class Plan extends BaseEntity{
   private Long id;
 
   @Column(nullable = false)
-  private String username;
-
-  @Column(nullable = false)
   private String title;
 
   @Column(nullable = false)
   private String contents;
 
-  public Plan(String username, String title, String contents) {
-    this.username = username;
+  @ManyToOne
+  @JoinColumn(name="userId")
+  private User user;
+
+  public Plan(String title, String contents) {
     this.title = title;
     this.contents = contents;
   }
-
 
   public void updateTitle(String title) {
     this.title = title;
@@ -35,5 +34,10 @@ public class Plan extends BaseEntity{
 
   public void updateContents(String contents) {
     this.contents = contents;
+  }
+
+  // member 주입
+  public void setUser(User user) {
+    this.user = user;
   }
 }

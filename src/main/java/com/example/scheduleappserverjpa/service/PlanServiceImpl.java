@@ -4,10 +4,11 @@ import com.example.scheduleappserverjpa.dto.plan.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
 import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Plan;
+import com.example.scheduleappserverjpa.entity.User;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
+import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,30 +16,34 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.example.scheduleappserverjpa.dto.plan.FindResponseDto.toDto;
+import static com.example.scheduleappserverjpa.dto.plan.FindResponseDto.from;
 
 @Service
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService {
 
   private final PlanRepository planRepository;
+  private final UserRepository userRepository;
 
   @Override
   public SaveResponseDto savePlan(String username, String title, String contents) {
-    Plan plan = new Plan(username, title, contents);
+    // userName 으로 Entity 를 찾기
+    User findUser = userRepository.findUserByNameOrElseThrow(username);
+    Plan plan = new Plan(title, contents);
+    plan.setUser(findUser);
     Plan saved = planRepository.save(plan);
-    return new SaveResponseDto(saved);
+    return SaveResponseDto.from(saved);
   }
 
   @Override
   public List<FindResponseDto> findByAll() {
-    return planRepository.findAll().stream().map(FindResponseDto::toDto).toList();
+    return planRepository.findAll().stream().map(FindResponseDto::from).toList();
   }
 
   @Override
   public FindResponseDto findById(Long id) {
     Plan findPlan = planRepository.findByIdOrElseThrow(id);
-    return toDto(findPlan);
+    return from(findPlan);
   }
 
   @Transactional
@@ -51,13 +56,13 @@ public class PlanServiceImpl implements PlanService {
     Plan findPlan = planRepository.findByIdOrElseThrow(id);
 
     // 값이 유효하지 않다면, 에러 반환
-    if(!dto.isValid()) {
+    if (!dto.isValid()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     // 만약 널 값 ?비어있다면, 그냥 기존의 값을 유지하도록
-    String setTitle = (StringUtils.isEmpty(dto.getTitle()))?findPlan.getTitle():dto.getTitle();
-    String setContents = (StringUtils.isEmpty(dto.getContents()))?findPlan.getContents():dto.getContents();
+    String setTitle = (StringUtils.isEmpty(dto.getTitle())) ? findPlan.getTitle() : dto.getTitle();
+    String setContents = (StringUtils.isEmpty(dto.getContents())) ? findPlan.getContents() : dto.getContents();
 
     // 그리고 해당 값을 추가해줍니다.
     findPlan.updateTitle(setTitle);
@@ -66,10 +71,7 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   public void deletePlan(Long id) {
-    // 1. 먼저 id 값이 있나 없나 확인부터 해야합니다.
     Plan findPlan = planRepository.findByIdOrElseThrow(id);
-
-    // 2. 삭제해줍니다 !
     planRepository.delete(findPlan);
   }
 }
