@@ -1,6 +1,7 @@
 package com.example.scheduleappserverjpa.controller;
 
 import com.example.scheduleappserverjpa.common.Const;
+import com.example.scheduleappserverjpa.config.PasswordEncoder;
 import com.example.scheduleappserverjpa.dto.user.*;
 import com.example.scheduleappserverjpa.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -25,6 +26,8 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
+  // 비밀번호를 암호화하기 위해서 선언
+  private final PasswordEncoder passwordEncoder;
 
   // 회원가입
   @PostMapping("/signup")

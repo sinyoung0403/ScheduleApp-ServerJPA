@@ -35,4 +35,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
   default User findByIdAndPwdOrElseThrow(Long id, String pwd) {
     return findByIdAndPwd(id, pwd).orElseThrow(()-> new InvalidPasswordException(id + ", 해당 유저와 비밀번호가 일치하지 않습니다."));
   }
+
+  Optional<User> findByEmail(String email);
+
+  default User findByEmailOrElseThrow(String email) {
+    return findByEmail(email).orElseThrow(()->new DataNotFoundException("해당하는 이메일이 존재하지 않습니다."));
+  }
+  User findDistinctByEmail(String email);
 }
