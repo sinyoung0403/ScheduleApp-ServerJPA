@@ -1,5 +1,7 @@
 package com.example.scheduleappserverjpa.dto.plan;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,12 +12,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SaveRequestDto {
-  // 일정을 추가할 때 필요한 것은 유저명, 제목, 내용, 작성일, 수정일이 필요.
-  // 하지만 우리는 작성일과 수정일을 자동으로 해줄거기 때문에 생략!
-
-  // 유저명, 타이틀 컨텐츠만 받을 거임. 일단은 생성자나 그런건 필요없는듯 ?
+  @NotBlank(message = "이름은 필수값 입니다.")
+  @Size(min=2, max=4)
   private String username;
+
+  @NotBlank(message = "제목은 필수값 입니다.")
+  @Size(max=10)
   private String title;
+
+  @NotBlank(message = "할일은 필수값 입니다.")
   private String contents;
 
 }

@@ -1,5 +1,6 @@
 package com.example.scheduleappserverjpa.dto.plan;
 
+import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,6 +15,6 @@ public class UpdateRequestDto {
 
   // 둘다 없는지 확인하는 로직
   public boolean isValid() {
-    return title != null || contents != null;
+    return !StringUtils.isEmpty(title) || !StringUtils.isEmpty(contents);
   }
 }
