@@ -5,6 +5,7 @@ import com.example.scheduleappserverjpa.dto.plan.SaveRequestDto;
 import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
 import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
 import com.example.scheduleappserverjpa.service.PlanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class PlanController {
 
   // 일정 추가
   @PostMapping
-  public ResponseEntity<SaveResponseDto> savePlan(@RequestBody SaveRequestDto dto) {
+  public ResponseEntity<SaveResponseDto> savePlan(@Valid @RequestBody SaveRequestDto dto) {
     SaveResponseDto responseDto = planService.savePlan(dto.getUsername(), dto.getTitle(), dto.getContents());
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
   }
@@ -44,7 +45,7 @@ public class PlanController {
   @PatchMapping("/{id}")
   public ResponseEntity<Void> updatePlan(
           @PathVariable Long id,
-          @RequestBody UpdateRequestDto dto
+          @Valid @RequestBody UpdateRequestDto dto
   ) {
     planService.updatePlan(id, dto);
     return new ResponseEntity<>(HttpStatus.OK);

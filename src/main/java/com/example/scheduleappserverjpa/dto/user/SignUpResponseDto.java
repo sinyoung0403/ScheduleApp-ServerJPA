@@ -2,6 +2,9 @@ package com.example.scheduleappserverjpa.dto.user;
 
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

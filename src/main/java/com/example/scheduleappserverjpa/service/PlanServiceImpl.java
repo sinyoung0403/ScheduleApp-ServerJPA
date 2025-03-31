@@ -5,6 +5,7 @@ import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
 import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
+import com.example.scheduleappserverjpa.exception.InvalidRequestException;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
@@ -57,7 +58,7 @@ public class PlanServiceImpl implements PlanService {
 
     // 값이 유효하지 않다면, 에러 반환
     if (!dto.isValid()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new InvalidRequestException("입력 값이 유효하지 않습니다. 둘 중 하나의 값은 입력해야 합니다.");
     }
 
     // 만약 널 값 ?비어있다면, 그냥 기존의 값을 유지하도록

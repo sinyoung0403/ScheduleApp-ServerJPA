@@ -2,6 +2,7 @@ package com.example.scheduleappserverjpa.service;
 
 import com.example.scheduleappserverjpa.dto.user.*;
 import com.example.scheduleappserverjpa.entity.User;
+import com.example.scheduleappserverjpa.exception.InvalidRequestException;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpSession;
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
     // 그 후 update 해주기
     if (!dto.isValid()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new InvalidRequestException("입력값이 잘못되었습니다.");
     }
 
     // 만약 널 값 ?비어있다면, 그냥 기존의 값을 유지하도록
