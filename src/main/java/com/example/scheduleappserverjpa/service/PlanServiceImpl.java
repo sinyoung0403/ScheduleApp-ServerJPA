@@ -9,7 +9,6 @@ import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.example.scheduleappserverjpa.dto.plan.FindResponseDto.toDto;
+import static com.example.scheduleappserverjpa.dto.plan.FindResponseDto.from;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +37,13 @@ public class PlanServiceImpl implements PlanService {
 
   @Override
   public List<FindResponseDto> findByAll() {
-    return planRepository.findAll().stream().map(FindResponseDto::toDto).toList();
+    return planRepository.findAll().stream().map(FindResponseDto::from).toList();
   }
 
   @Override
   public FindResponseDto findById(Long id) {
     Plan findPlan = planRepository.findByIdOrElseThrow(id);
-    return toDto(findPlan);
+    return from(findPlan);
   }
 
   @Transactional
