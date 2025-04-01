@@ -1,19 +1,17 @@
 package com.example.scheduleappserverjpa.service;
 
-import com.example.scheduleappserverjpa.dto.plan.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.*;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
 import com.example.scheduleappserverjpa.exception.InvalidRequestException;
+import com.example.scheduleappserverjpa.repository.CommentRepository;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,6 +23,7 @@ public class PlanServiceImpl implements PlanService {
 
   private final PlanRepository planRepository;
   private final UserRepository userRepository;
+  private final CommentRepository commentRepository;
 
   @Override
   public SaveResponseDto savePlan(String username, String title, String contents) {
@@ -75,4 +74,23 @@ public class PlanServiceImpl implements PlanService {
     Plan findPlan = planRepository.findByIdOrElseThrow(id);
     planRepository.delete(findPlan);
   }
+
+  @Override
+  public PageResponseDto page(int pageNumber, int pageSize) {
+    // pageable 객체 만들기
+    // 정렬방향과 속성 properties 를 지정하려면 Sort 객체를 생성하여야함.
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "updatedAt"));
+
+    Page<Plan> planPage = planRepository.findAll(pageable);
+
+    List<PlanWithUserAndCommentDto> pageResponseDto = planPage.getContent().stream().map(plan -> {
+      Long commentCount = commentRepository.countByPlan_Id(plan.getId());
+      String name = plan.getUser().getName();
+      return PlanWithUserAndCommentDto.from(name, plan, commentCount);
+    }).toList();
+
+    return PageResponseDto.from(pageResponseDto, pageNumber, pageSize, planPage.getTotalPages(), planPage.getTotalElements());
+  }
+  // 리스트로 페이지 ? 관련된 부분도 넘겨주고싶은데.
+
 }

@@ -1,9 +1,7 @@
 package com.example.scheduleappserverjpa.service;
 
 
-import com.example.scheduleappserverjpa.dto.plan.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.*;
 
 import java.util.List;
 
@@ -20,4 +18,6 @@ public interface PlanService {
   void updatePlan(Long id, UpdateRequestDto dto);
 
   void deletePlan(Long id);
+
+  PageResponseDto page(int pageNumber, int pageSize);
 }
