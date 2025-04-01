@@ -20,7 +20,7 @@ public class Plan extends BaseEntity{
   private String contents;
 
   @ManyToOne
-  @JoinColumn(name="userId")
+  @JoinColumn(name="user_id")
   private User user;
 
   public Plan(String title, String contents) {
