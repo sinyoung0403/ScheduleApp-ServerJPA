@@ -13,7 +13,7 @@ public interface UserService {
 
   void update(Long id, UpdateRequestDto dto);
 
-  void delete(Long id);
+  void delete(Long id, DeleteRequestDto dto);
 
-  FindResponseDto login(LoginRequestDto dto);
+  LoginDto login(LoginRequestDto dto);
 }

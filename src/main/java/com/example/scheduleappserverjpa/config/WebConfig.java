@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.io.FileFilter;
-
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
@@ -18,9 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     // 필터 등록
     filterRegistrationBean.setFilter(new LoginFilter());
-    // Filter 순서 등록
+    // Filter 순서 설정
     filterRegistrationBean.setOrder(1);
-    // 전체 URL 에 필터 등록
+    // 전체 URL 에 Filter 적용
     filterRegistrationBean.addUrlPatterns("/*");
 
     return filterRegistrationBean;
