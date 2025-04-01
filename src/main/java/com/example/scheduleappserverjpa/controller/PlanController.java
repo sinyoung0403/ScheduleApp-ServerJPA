@@ -1,9 +1,6 @@
 package com.example.scheduleappserverjpa.controller;
 
-import com.example.scheduleappserverjpa.dto.plan.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.SaveRequestDto;
-import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
-import com.example.scheduleappserverjpa.dto.plan.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.*;
 import com.example.scheduleappserverjpa.service.PlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +53,17 @@ public class PlanController {
   public ResponseEntity<Void> deletePlan(@PathVariable Long id) {
     planService.deletePlan(id);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  // 페이징 조회
+  @GetMapping("/pages")
+  public ResponseEntity<PageResponseDto> page(
+          @RequestParam(required = false, defaultValue = "1") int pageNumber,
+          @RequestParam(required = false, defaultValue = "10") int pageSize
+  ) {
+    // - 를 하는 이유? 0 번째 페이지는 없기 때문 !
+    PageResponseDto page = planService.page(pageNumber - 1, pageSize);
+    return ResponseEntity.ok(page);
   }
 }
 

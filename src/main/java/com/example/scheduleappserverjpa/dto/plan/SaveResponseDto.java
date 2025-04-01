@@ -1,6 +1,7 @@
 package com.example.scheduleappserverjpa.dto.plan;
 
 import com.example.scheduleappserverjpa.entity.Plan;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,8 +17,10 @@ public class SaveResponseDto {
 
   private String contents;
 
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdAt;
 
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updatedAt;
 
   // 생성자도 만들어주어야함.

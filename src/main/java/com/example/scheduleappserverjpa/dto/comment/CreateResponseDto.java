@@ -3,6 +3,7 @@ package com.example.scheduleappserverjpa.dto.comment;
 import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
 import com.example.scheduleappserverjpa.entity.Comment;
 import com.example.scheduleappserverjpa.entity.Plan;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,8 +17,10 @@ public class CreateResponseDto {
 
   private String content;
 
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdAt;
 
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updatedAt;
 
   public static CreateResponseDto from(Comment comment) {
