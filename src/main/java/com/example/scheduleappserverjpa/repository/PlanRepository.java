@@ -8,6 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
   default Plan findByIdOrElseThrow(Long id) {
-    return findById(id).orElseThrow(()->new DataNotFoundException(id + ", 해당 유저가 존재하지 않습니다."));
+    return findById(id).orElseThrow(()->new DataNotFoundException(id + ", 해당 게시글이 존재하지 않습니다."));
   }
 }
