@@ -15,5 +15,5 @@ public interface UserService {
 
   void delete(Long id, DeleteRequestDto dto);
 
-  FindResponseDto login(LoginRequestDto dto);
+  LoginDto login(LoginRequestDto dto);
 }

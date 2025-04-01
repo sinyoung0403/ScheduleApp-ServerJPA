@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public FindResponseDto login(LoginRequestDto dto) {
+  public LoginDto login(LoginRequestDto dto) {
     // 이메일에 맞는 유저 찾기
     User findUser = userRepository.findByEmailOrElseThrow(dto.getEmail());
 
@@ -100,6 +100,6 @@ public class UserServiceImpl implements UserService {
     if(!isMatch) {
       throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
     }
-    return FindResponseDto.from(findUser);
+    return LoginDto.from(findUser);
   }
 }

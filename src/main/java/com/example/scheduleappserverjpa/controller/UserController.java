@@ -48,22 +48,24 @@ public class UserController {
   }
 
   // 유저 수정
-  @PatchMapping("/{id}")
+  @PatchMapping
   public ResponseEntity<String> update(
-          @PathVariable Long id,
-          @Valid @RequestBody UpdateRequestDto dto
+          @Valid @RequestBody UpdateRequestDto dto,
+          HttpServletRequest request
   ) {
-    userService.update(id, dto);
-    return ResponseEntity.status(HttpStatus.OK).body(id + " 유저를 수정했습니다.");
+    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
+    userService.update(loginUser.getId(), dto);
+    return ResponseEntity.status(HttpStatus.OK).body(loginUser.getId() + " 유저를 수정했습니다.");
   }
 
   // 유저 삭제
-  @DeleteMapping("/{id}")
+  @DeleteMapping
   public ResponseEntity<String> delete(
-          @PathVariable Long id,
-          @Valid @RequestBody DeleteRequestDto dto) {
-    userService.delete(id, dto);
-    return ResponseEntity.status(HttpStatus.OK).body(id + " 유저를 삭제했습니다.");
+          @Valid @RequestBody DeleteRequestDto dto,
+          HttpServletRequest request) {
+    LoginDto loginDto = (LoginDto) request.getSession().getAttribute("loginUser");
+    userService.delete(loginDto.getId(), dto);
+    return ResponseEntity.status(HttpStatus.OK).body(loginDto.getId() + " 유저를 삭제했습니다.");
   }
 
   // 로그인
@@ -71,9 +73,9 @@ public class UserController {
   public ResponseEntity<String> login(
           @Valid @RequestBody LoginRequestDto dto,
           HttpServletRequest request) {
-    FindResponseDto findResponseDto = userService.login(dto);
+    LoginDto loginDto = userService.login(dto);
     HttpSession session = request.getSession();
-    session.setAttribute(Const.LOGIN_USER, findResponseDto);
+    session.setAttribute(Const.LOGIN_USER, loginDto);
 
     System.out.println(request.getSession());
     return ResponseEntity.status(HttpStatus.OK).body("로그인했습니다.");
@@ -84,9 +86,6 @@ public class UserController {
   public ResponseEntity<String> logout(HttpServletRequest request) {
 
     HttpSession session = request.getSession(false);
-
-    FindResponseDto loginUser = (FindResponseDto) request.getSession().getAttribute("loginUser");
-    System.out.println(loginUser.getId());
     if (session != null) {
       session.invalidate(); // 해당 세션(데이터)을 삭제한다.
     }
