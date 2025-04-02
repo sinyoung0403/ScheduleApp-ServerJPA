@@ -35,14 +35,14 @@ public class CommentController {
     return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(planId, loginUser.getId(), dto));
   }
 
-  // 일정에 있는 댓글 조회
+  // 일정의 댓글 전체 조회
   @GetMapping
   public ResponseEntity<List<FindResponseDto>> findAllByPlanId(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId) {
     return ResponseEntity.ok(commentService.findAllByPlanId(planId));
   }
 
-  // 일정 속 하나의 댓글 조회
+  // 일정의 댓글 단건 조회
   @GetMapping("/{commentId}")
   public ResponseEntity<FindResponseDto> findById(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
