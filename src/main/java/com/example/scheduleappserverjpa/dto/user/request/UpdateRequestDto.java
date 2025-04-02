@@ -1,8 +1,7 @@
-package com.example.scheduleappserverjpa.dto.user;
+package com.example.scheduleappserverjpa.dto.user.request;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

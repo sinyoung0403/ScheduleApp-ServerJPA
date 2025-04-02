@@ -1,10 +1,9 @@
-package com.example.scheduleappserverjpa.dto.comment;
+package com.example.scheduleappserverjpa.dto.plan.response;
 
-import com.example.scheduleappserverjpa.entity.Comment;
+import com.example.scheduleappserverjpa.entity.Plan;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.hibernate.annotations.processing.Find;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,9 @@ import java.time.LocalDateTime;
 public class FindResponseDto {
   private String username;
 
-  private String content;
+  private String title;
+
+  private String contents;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createdAt;
@@ -21,7 +22,7 @@ public class FindResponseDto {
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updatedAt;
 
-  public static FindResponseDto from(Comment comment) {
-    return new FindResponseDto(comment.getUser().getName(), comment.getContent(), comment.getCreatedAt(), comment.getUpdatedAt());
+  public static FindResponseDto from(Plan plan) {
+    return new FindResponseDto(plan.getUser().getName(), plan.getTitle(), plan.getContents(), plan.getCreatedAt(), plan.getUpdatedAt());
   }
 }

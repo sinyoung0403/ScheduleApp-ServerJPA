@@ -1,4 +1,4 @@
-package com.example.scheduleappserverjpa.dto.plan;
+package com.example.scheduleappserverjpa.dto.plan.request;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
@@ -7,13 +7,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UpdateRequestDto {
-  // 제목
+
   private String title;
 
-  // 할일
+
   private String contents;
 
-  // 둘다 없는지 확인하는 로직
+  // 둘 다 있는지 유효값 검증
   public boolean isValid() {
     return !StringUtils.isEmpty(title) || !StringUtils.isEmpty(contents);
   }

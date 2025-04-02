@@ -1,26 +1,40 @@
 package com.example.scheduleappserverjpa.controller;
 
-import com.example.scheduleappserverjpa.dto.plan.*;
+import com.example.scheduleappserverjpa.dto.plan.request.DeleteRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.request.SaveRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.request.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.plan.response.FindResponseDto;
+import com.example.scheduleappserverjpa.dto.plan.response.PageResponseDto;
+import com.example.scheduleappserverjpa.dto.plan.response.SaveResponseDto;
+import com.example.scheduleappserverjpa.dto.user.LoginDto;
 import com.example.scheduleappserverjpa.service.PlanService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/plans")
-@RequiredArgsConstructor // 의존성 주입 시, 생성자 주입 방식을 어노테이션으로 대신
+@RequiredArgsConstructor
 public class PlanController {
 
   private final PlanService planService;
 
   // 일정 추가
   @PostMapping
-  public ResponseEntity<SaveResponseDto> savePlan(@Valid @RequestBody SaveRequestDto dto) {
-    SaveResponseDto responseDto = planService.savePlan(dto.getUsername(), dto.getTitle(), dto.getContents());
+  public ResponseEntity<SaveResponseDto> savePlan(
+          @Valid @RequestBody SaveRequestDto dto,
+          HttpServletRequest request) {
+    // 로그인 사용자 세션 받아오기
+    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
+    // 이것도 그냥 dto 그대로 전달해둘것.
+    SaveResponseDto responseDto = planService.savePlan(dto, loginUser.getId());
     return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
   }
 
@@ -40,19 +54,23 @@ public class PlanController {
 
   // 일정 수정
   @PatchMapping("/{id}")
-  public ResponseEntity<Void> updatePlan(
+  public ResponseEntity<String> updatePlan(
           @PathVariable Long id,
-          @Valid @RequestBody UpdateRequestDto dto
+          @Valid @RequestBody UpdateRequestDto dto,
+          HttpServletRequest request
   ) {
-    planService.updatePlan(id, dto);
-    return new ResponseEntity<>(HttpStatus.OK);
+    // 로그인된 유저의 dto
+    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
+    planService.updatePlan(id, loginUser.getId(), dto);
+    return ResponseEntity.ok("일정 수정이 완료되었습니다.");
   }
 
   // 일정 삭제
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deletePlan(@PathVariable Long id) {
-    planService.deletePlan(id);
-    return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<String> deletePlan(@PathVariable Long id, @RequestBody DeleteRequestDto dto, HttpServletRequest request) {
+    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
+    planService.deletePlan(id, loginUser.getId(), dto);
+    return ResponseEntity.ok("일정 삭제가 완료되었습니다.");
   }
 
   // 페이징 조회
@@ -61,7 +79,6 @@ public class PlanController {
           @RequestParam(required = false, defaultValue = "1") int pageNumber,
           @RequestParam(required = false, defaultValue = "10") int pageSize
   ) {
-    // - 를 하는 이유? 0 번째 페이지는 없기 때문 !
     PageResponseDto page = planService.page(pageNumber - 1, pageSize);
     return ResponseEntity.ok(page);
   }

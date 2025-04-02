@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "plan")
-@NoArgsConstructor // 기본생성자
-public class Plan extends BaseEntity{
+@NoArgsConstructor
+public class Plan extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -20,7 +20,7 @@ public class Plan extends BaseEntity{
   private String contents;
 
   @ManyToOne
-  @JoinColumn(name="user_id")
+  @JoinColumn(name = "user_id")
   private User user;
 
   public Plan(String title, String contents) {

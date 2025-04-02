@@ -1,4 +1,4 @@
-package com.example.scheduleappserverjpa.dto.comment;
+package com.example.scheduleappserverjpa.dto.comment.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

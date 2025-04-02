@@ -1,17 +1,19 @@
 package com.example.scheduleappserverjpa.controller;
 
 import com.example.scheduleappserverjpa.common.Const;
-import com.example.scheduleappserverjpa.config.PasswordEncoder;
+
 import com.example.scheduleappserverjpa.dto.user.*;
+import com.example.scheduleappserverjpa.dto.user.request.DeleteRequestDto;
+import com.example.scheduleappserverjpa.dto.user.request.LoginRequestDto;
+import com.example.scheduleappserverjpa.dto.user.request.SignUpRequestDto;
+import com.example.scheduleappserverjpa.dto.user.request.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.user.response.FindResponseDto;
+import com.example.scheduleappserverjpa.dto.user.response.SignUpResponseDto;
 import com.example.scheduleappserverjpa.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +28,6 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
-  // 비밀번호를 암호화하기 위해서 선언
-  private final PasswordEncoder passwordEncoder;
 
   // 회원가입
   @PostMapping("/signup")
@@ -84,7 +84,6 @@ public class UserController {
   // 로그아웃
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
-
     HttpSession session = request.getSession(false);
     if (session != null) {
       session.invalidate(); // 해당 세션(데이터)을 삭제한다.
