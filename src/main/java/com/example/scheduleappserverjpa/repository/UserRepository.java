@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   default void checkEmailDuplicate(String email) {
     if (existsByEmail(email)) {
-      throw new InvalidRequestException("존재하는 이메일입니다.");
+      throw new InvalidRequestException("이미 존재하는 이메일입니다.");
     }
   }
 }

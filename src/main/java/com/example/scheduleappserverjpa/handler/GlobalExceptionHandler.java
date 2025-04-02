@@ -4,7 +4,6 @@ import com.example.scheduleappserverjpa.exception.DataNotFoundException;
 import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.exception.InvalidRequestException;
 import com.example.scheduleappserverjpa.exception.UnauthorizedAccessException;
-import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
