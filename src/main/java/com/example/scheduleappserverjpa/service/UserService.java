@@ -22,7 +22,5 @@ public interface UserService {
 
   void delete(Long id, DeleteRequestDto dto);
 
-  LoginDto login(LoginRequestDto dto, HttpSession session);
-
-  void logout(HttpSession session);
+  LoginDto login(LoginRequestDto dto);
 }

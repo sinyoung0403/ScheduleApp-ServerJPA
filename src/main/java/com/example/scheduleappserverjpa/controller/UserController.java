@@ -9,6 +9,7 @@ import com.example.scheduleappserverjpa.dto.user.request.SignUpRequestDto;
 import com.example.scheduleappserverjpa.dto.user.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.dto.user.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.user.response.SignUpResponseDto;
+import com.example.scheduleappserverjpa.exception.InvalidRequestException;
 import com.example.scheduleappserverjpa.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -74,7 +75,13 @@ public class UserController {
           @Valid @RequestBody LoginRequestDto dto,
           HttpServletRequest request) {
     HttpSession session = request.getSession();
-    LoginDto loginDto = userService.login(dto, session);
+
+    // 로그인 중이라면 Bad_Request
+    if (session.getAttribute("loginUser") != null) {
+      throw new InvalidRequestException("이미 로그인된 상태입니다.");
+    }
+
+    LoginDto loginDto = userService.login(dto);
     session.setAttribute(Const.LOGIN_USER, loginDto);
     return ResponseEntity.ok("로그인했습니다.");
   }
@@ -83,7 +90,9 @@ public class UserController {
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
-    userService.logout(session);
+    if (session != null) {
+      session.invalidate();
+    }
     return ResponseEntity.ok("로그아웃 했습니다.");
   }
 }

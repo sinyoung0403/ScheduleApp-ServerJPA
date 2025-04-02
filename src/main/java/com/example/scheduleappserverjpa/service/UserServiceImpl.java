@@ -98,12 +98,7 @@ public class UserServiceImpl implements UserService {
 
   /* 로그인 */
   @Override
-  public LoginDto login(LoginRequestDto dto, HttpSession session) {
-    // 로그인 중이라면 Bad_Request
-    if (session.getAttribute("loginUser") != null) {
-      throw new InvalidRequestException("로그인 중인 상태입니다.");
-    }
-
+  public LoginDto login(LoginRequestDto dto) {
     // 데이터 검증 및 조회
     User findUser = userRepository.findByEmailOrElseThrow(dto.getEmail());
 
@@ -114,14 +109,5 @@ public class UserServiceImpl implements UserService {
 
     // DTO 로 변환 후 반환
     return LoginDto.from(findUser);
-  }
-
-  /* 로그아웃 */
-  @Override
-  public void logout(HttpSession session) {
-    // 로그인 되지 않았을 경우 필터에서 예외 처리
-    if (session != null) {
-      session.invalidate();
-    }
   }
 }
