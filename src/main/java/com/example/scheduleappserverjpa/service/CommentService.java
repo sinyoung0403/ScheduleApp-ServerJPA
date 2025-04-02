@@ -1,6 +1,7 @@
 package com.example.scheduleappserverjpa.service;
 
 import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.DeleteRequestDto;
 import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
@@ -16,5 +17,5 @@ public interface CommentService {
 
   void updateComment(Long planId, Long id, Long commentId, UpdateRequestDto dto);
 
-  void deleteComment(Long planId, Long userId, Long commentId);
+  void deleteComment(Long planId, Long userId, Long commentId, DeleteRequestDto dto);
 }

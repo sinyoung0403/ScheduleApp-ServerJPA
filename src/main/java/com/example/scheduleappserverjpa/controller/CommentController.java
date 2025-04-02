@@ -1,6 +1,7 @@
 package com.example.scheduleappserverjpa.controller;
 
 import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.DeleteRequestDto;
 import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
@@ -70,10 +71,11 @@ public class CommentController {
   public ResponseEntity<String> deleteComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
           @Positive(message = "양수만 허용합니다.") @PathVariable Long commentId,
+          @Valid @RequestBody DeleteRequestDto dto,
           HttpServletRequest request
   ) {
     LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    commentService.deleteComment(planId, loginUser.getId(), commentId);
+    commentService.deleteComment(planId, loginUser.getId(), commentId, dto);
     return ResponseEntity.ok("댓글 삭제가 완료되었습니다.");
   }
 }

@@ -1,12 +1,15 @@
 package com.example.scheduleappserverjpa.service;
 
+import com.example.scheduleappserverjpa.config.PasswordEncoder;
 import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.DeleteRequestDto;
 import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Comment;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
+import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.repository.CommentRepository;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
@@ -23,6 +26,7 @@ public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final PlanRepository planRepository;
+  private final PasswordEncoder passwordEncoder;
 
   /* 댓글 생성 */
   @Override
@@ -90,15 +94,20 @@ public class CommentServiceImpl implements CommentService {
   /* 댓글 삭제 */
   @Transactional
   @Override
-  public void deleteComment(Long planId, Long userId, Long commentId) {
+  public void deleteComment(Long planId, Long userId, Long commentId, DeleteRequestDto dto) {
     // 데이터 검증
     verifyAllExistOrThrow(planId, userId, commentId);
 
     // 로그인된 유저의 댓글 삭제 접근 검증 및 조회
-    Comment comment = commentRepository.findByPlan_IdAndUser_IdAndIdOrElseThrow(planId, userId, commentId);
+    Comment findComment = commentRepository.findByPlan_IdAndUser_IdAndIdOrElseThrow(planId, userId, commentId);
+
+    // 입력한 PWD 검증
+    if (!passwordEncoder.matches(dto.getPwd(), findComment.getUser().getPwd())) {
+      throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
+    }
 
     // 댓글 삭제
-    commentRepository.delete(comment);
+    commentRepository.delete(findComment);
   }
 
   /* 데이터 검증 */
