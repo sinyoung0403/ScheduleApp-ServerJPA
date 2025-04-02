@@ -24,7 +24,7 @@ public class CommentServiceImpl implements CommentService {
   private final UserRepository userRepository;
   private final PlanRepository planRepository;
 
-  // 댓글 생성
+  /* 댓글 생성 */
   @Override
   public CreateResponseDto createComment(Long planId, Long userId, CreateRequestDto dto) {
     // 데이터 검증 및 조회
@@ -45,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     return CreateResponseDto.from(saved);
   }
 
-  // 일정의 댓글 전체 조회
+  /* 일정의 댓글 전체 조회 */
   @Override
   public List<FindResponseDto> findAllByPlanId(Long planId) {
     // 데이터 검증
@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
             .toList();
   }
 
-  // 일정의 댓글 단건 조회
+  /* 일정의 댓글 단건 조회 */
   @Override
   public FindResponseDto findById(Long planId, Long commentId) {
     // 데이터 검증
@@ -73,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
     return FindResponseDto.from(comment);
   }
 
-  // 댓글 수정
+  /* 댓글 수정 */
   @Transactional // 확장성 고려
   @Override
   public void updateComment(Long planId, Long userId, Long commentId, UpdateRequestDto dto) {
@@ -87,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
     comment.updateContent(dto.getContent());
   }
 
-  // 댓글 삭제
+  /* 댓글 삭제 */
   @Transactional
   @Override
   public void deleteComment(Long planId, Long userId, Long commentId) {
@@ -101,6 +101,7 @@ public class CommentServiceImpl implements CommentService {
     commentRepository.delete(comment);
   }
 
+  /* 데이터 검증 */
   private void verifyAllExistOrThrow(Long planId, Long userId, Long commentId) {
     // 일정 데이터 검증
     planRepository.validateExistenceById(planId);
