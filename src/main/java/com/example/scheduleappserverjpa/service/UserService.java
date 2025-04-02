@@ -7,6 +7,7 @@ import com.example.scheduleappserverjpa.dto.user.request.SignUpRequestDto;
 import com.example.scheduleappserverjpa.dto.user.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.dto.user.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.user.response.SignUpResponseDto;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -21,5 +22,7 @@ public interface UserService {
 
   void delete(Long id, DeleteRequestDto dto);
 
-  LoginDto login(LoginRequestDto dto);
+  LoginDto login(LoginRequestDto dto, HttpSession session);
+
+  void logout(HttpSession session);
 }

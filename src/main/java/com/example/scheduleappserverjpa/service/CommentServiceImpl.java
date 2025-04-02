@@ -108,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
     commentRepository.validateExistenceByPlan_Id(planId);
 
     // 유저 데이터 검증
-    userRepository.existsById(userId);
+    userRepository.validateExistenceById(userId);
 
     // 댓글 데이터 검증
     commentRepository.validateExistenceById(commentId);

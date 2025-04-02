@@ -10,6 +10,7 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.net.http.HttpConnectTimeoutException;
 
 public class LoginFilter implements Filter {
@@ -24,20 +25,24 @@ public class LoginFilter implements Filter {
     HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
     // request URL Get
     String requestURL = httpServletRequest.getRequestURI();
+    try {
+      // 화이트 리스트 여뷰 확인
+      if (!isWhiteList(requestURL)) {
+        HttpSession session = httpServletRequest.getSession(false);
 
-    // response 다운 캐스팅
-    HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-
-    // 화이트 리스트 여뷰 확인
-    if (!isWhiteList(requestURL)) {
-      HttpSession session = httpServletRequest.getSession(false);
-
-      // 세션이 없거나 세션 키가 널이라면, 로그인 되지 않은 것.
-      if (session == null || session.getAttribute("loginUser") == null) {
-        throw new UnauthorizedAccessException("로그인되지 않았습니다.");
+        // 세션이 없거나 세션 키가 널이라면, 로그인 되지 않은 것.
+        if (session == null || session.getAttribute("loginUser") == null) {
+          throw new RuntimeException();
+        }
       }
+      filterChain.doFilter(servletRequest, servletResponse);
+    } catch (RuntimeException ex) {
+      HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+      httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      httpServletResponse.setContentType("application/json");
+      httpServletResponse.setCharacterEncoding("UTF-8");
+      httpServletResponse.getWriter().write("로그인 후 이용 가능합니다.");
     }
-    filterChain.doFilter(servletRequest, servletResponse);
   }
 
   public boolean isWhiteList(String string) {
