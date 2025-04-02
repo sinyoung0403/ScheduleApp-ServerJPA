@@ -1,9 +1,9 @@
 package com.example.scheduleappserverjpa.service;
 
-import com.example.scheduleappserverjpa.dto.comment.CreateRequestDto;
-import com.example.scheduleappserverjpa.dto.comment.CreateResponseDto;
-import com.example.scheduleappserverjpa.dto.comment.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.comment.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
+import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
+import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 
 import java.util.List;
 

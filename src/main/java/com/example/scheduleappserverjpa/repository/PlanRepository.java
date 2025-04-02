@@ -13,8 +13,12 @@ import java.time.LocalDateTime;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
   default Plan findByIdOrElseThrow(Long id) {
-    return findById(id).orElseThrow(()->new DataNotFoundException(id + ", 해당 게시글이 존재하지 않습니다."));
+    return findById(id).orElseThrow(() -> new DataNotFoundException(id + ", 해당 게시글이 존재하지 않습니다."));
   }
 
+  // 유저의 Id 와 일치 하는가
+  boolean existsByIdAndUser_Id(Long planId, Long userId);
+
+  // 페이징
   Page<Plan> findAll(Pageable pageable);
 }

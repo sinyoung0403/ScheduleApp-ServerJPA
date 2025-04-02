@@ -1,9 +1,9 @@
 package com.example.scheduleappserverjpa.service;
 
-import com.example.scheduleappserverjpa.dto.comment.CreateRequestDto;
-import com.example.scheduleappserverjpa.dto.comment.CreateResponseDto;
-import com.example.scheduleappserverjpa.dto.comment.FindResponseDto;
-import com.example.scheduleappserverjpa.dto.comment.UpdateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
+import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
+import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Comment;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +65,7 @@ public class CommentServiceImpl implements CommentService {
   @Transactional // 확장성 고려
   @Override
   public void updateComment(Long planId, Long userId, Long commentId, UpdateRequestDto dto) {
-    // 일정 테이블과 유저 테이블에 해당하는 아이디가 있는지 없는지부터 조회
+    // 일정 테이블과 유저 테이블에 해당하는 아이디가 있는지 없는지부터 조회 이거는 따로 빼라네 'ㅡ' ??
     if (!planRepository.existsById(planId) || !commentRepository.existsByPlan_Id(planId)) {
       throw new DataNotFoundException("해당 일정이 존재하지 않습니다.");
     }

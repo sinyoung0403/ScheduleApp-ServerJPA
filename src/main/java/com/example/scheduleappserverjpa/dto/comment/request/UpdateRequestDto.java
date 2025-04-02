@@ -1,4 +1,4 @@
-package com.example.scheduleappserverjpa.dto.comment;
+package com.example.scheduleappserverjpa.dto.comment.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

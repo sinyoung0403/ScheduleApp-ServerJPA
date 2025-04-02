@@ -9,6 +9,7 @@ import lombok.Getter;
 public class LoginDto {
   private final Long id;
 
+  // Dto 로 변환
   public static LoginDto from(User user) {
     return new LoginDto(user.getId());
   }
