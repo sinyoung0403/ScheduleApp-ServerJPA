@@ -45,9 +45,9 @@ public class GlobalExceptionHandler {
 
   // 권한이 없는 경우
   @ExceptionHandler(UnauthorizedAccessException.class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   public ResponseEntity<List<String>> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorToList(ex, "UNAUTHORIZED"));
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorToList(ex, "UNAUTHORIZED"));
   }
 
   // Valid 일치하지 않을 경우

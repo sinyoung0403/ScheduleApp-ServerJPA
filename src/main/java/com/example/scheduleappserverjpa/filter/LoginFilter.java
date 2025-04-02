@@ -38,7 +38,7 @@ public class LoginFilter implements Filter {
       filterChain.doFilter(servletRequest, servletResponse);
     } catch (RuntimeException ex) {
       HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-      httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
       httpServletResponse.setContentType("application/json");
       httpServletResponse.setCharacterEncoding("UTF-8");
       httpServletResponse.getWriter().write("로그인 후 이용 가능합니다.");
