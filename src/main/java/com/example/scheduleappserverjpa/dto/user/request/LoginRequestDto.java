@@ -1,4 +1,4 @@
-package com.example.scheduleappserverjpa.dto.user;
+package com.example.scheduleappserverjpa.dto.user.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

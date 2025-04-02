@@ -22,12 +22,6 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-  // 전체 에러 처리
-//  @ExceptionHandler(Exception.class)
-//  public ResponseEntity<List<String>> handleGeneralException(Exception ex) {
-//    return new ResponseEntity<>(errorToList(ex, "INTERNAL_SERVER_ERROR"), HttpStatus.INTERNAL_SERVER_ERROR);
-//  }
-
   // 파라미터가 없을 경우
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<List<String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {

@@ -1,8 +1,6 @@
-package com.example.scheduleappserverjpa.dto.comment;
+package com.example.scheduleappserverjpa.dto.comment.response;
 
-import com.example.scheduleappserverjpa.dto.plan.SaveResponseDto;
 import com.example.scheduleappserverjpa.entity.Comment;
-import com.example.scheduleappserverjpa.entity.Plan;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

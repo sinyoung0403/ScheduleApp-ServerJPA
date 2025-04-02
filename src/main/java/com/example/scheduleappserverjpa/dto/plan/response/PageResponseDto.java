@@ -1,5 +1,6 @@
-package com.example.scheduleappserverjpa.dto.plan;
+package com.example.scheduleappserverjpa.dto.plan.response;
 
+import com.example.scheduleappserverjpa.dto.plan.PlanWithUserAndCommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class PageResponseDto {
   private List<PlanWithUserAndCommentDto> plans;
   private Map<String, Object> pageInfo;
 
-  // from 코드
+  // ResponseDto 로 변환
   public static PageResponseDto from(List<PlanWithUserAndCommentDto> plans, int pageNumber, int pageSize, int totalPages, long totalElements) {
     Map<String, Object> pageInfo = new LinkedHashMap<>();
     pageInfo.put("pageNumber", pageNumber + 1);

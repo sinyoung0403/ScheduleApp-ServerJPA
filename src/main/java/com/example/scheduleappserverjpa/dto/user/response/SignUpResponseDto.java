@@ -1,10 +1,6 @@
-package com.example.scheduleappserverjpa.dto.user;
+package com.example.scheduleappserverjpa.dto.user.response;
 
-import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,6 +17,7 @@ public class SignUpResponseDto {
 
   private LocalDateTime updatedAt;
 
+  // ResponseDto 로 변환
   public static SignUpResponseDto from(User user){
     return new SignUpResponseDto(user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
   }
