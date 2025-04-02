@@ -1,10 +1,8 @@
 package com.example.scheduleappserverjpa.repository;
 
 import com.example.scheduleappserverjpa.entity.Comment;
-import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.exception.DataNotFoundException;
 import com.example.scheduleappserverjpa.exception.UnauthorizedAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

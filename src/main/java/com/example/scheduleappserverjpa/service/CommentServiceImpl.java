@@ -7,7 +7,6 @@ import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Comment;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
-import com.example.scheduleappserverjpa.exception.DataNotFoundException;
 import com.example.scheduleappserverjpa.repository.CommentRepository;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
