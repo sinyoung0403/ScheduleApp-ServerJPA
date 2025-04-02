@@ -11,6 +11,7 @@ import com.example.scheduleappserverjpa.service.PlanService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,27 +35,28 @@ public class PlanController {
           HttpServletRequest request) {
     LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
     SaveResponseDto responseDto = planService.savePlan(dto, loginUser.getId());
-    return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
   }
 
   /* 일정 전체 조회 */
   @GetMapping
   public ResponseEntity<List<FindResponseDto>> findByAll() {
     List<FindResponseDto> findResponseDto = planService.findByAll();
-    return new ResponseEntity<>(findResponseDto, HttpStatus.OK);
+    return ResponseEntity.ok(findResponseDto);
   }
 
   /* 일정 단건 조회 */
   @GetMapping("/{id}")
-  public ResponseEntity<FindResponseDto> findById(@PathVariable Long id) {
+  public ResponseEntity<FindResponseDto> findById(
+          @Positive(message = "양수만 허용합니다.") @PathVariable Long id) {
     FindResponseDto findResponseDto = planService.findById(id);
-    return new ResponseEntity<>(findResponseDto, HttpStatus.OK);
+    return ResponseEntity.ok(findResponseDto);
   }
 
   /* 일정 수정 */
   @PatchMapping("/{id}")
   public ResponseEntity<String> updatePlan(
-          @PathVariable Long id,
+          @Positive(message = "양수만 허용합니다.") @PathVariable Long id,
           @Valid @RequestBody UpdateRequestDto dto,
           HttpServletRequest request
   ) {
@@ -65,7 +67,10 @@ public class PlanController {
 
   /* 일정 삭제 */
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deletePlan(@PathVariable Long id, @RequestBody DeleteRequestDto dto, HttpServletRequest request) {
+  public ResponseEntity<String> deletePlan(
+          @Positive(message = "양수만 허용합니다.") @PathVariable Long id,
+          @Valid @RequestBody DeleteRequestDto dto,
+          HttpServletRequest request) {
     LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
     planService.deletePlan(id, loginUser.getId(), dto);
     return ResponseEntity.ok("일정 삭제가 완료되었습니다.");

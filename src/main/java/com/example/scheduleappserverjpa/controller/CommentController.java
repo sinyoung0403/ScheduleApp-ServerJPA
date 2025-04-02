@@ -25,7 +25,7 @@ public class CommentController {
 
   private final CommentService commentService;
 
-  // 댓글 생성
+  /* 댓글 생성  */
   @PostMapping
   public ResponseEntity<CreateResponseDto> createComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
@@ -35,14 +35,14 @@ public class CommentController {
     return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(planId, loginUser.getId(), dto));
   }
 
-  // 일정의 댓글 전체 조회
+  /* 일정의 댓글 전체 조회 */
   @GetMapping
   public ResponseEntity<List<FindResponseDto>> findAllByPlanId(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId) {
     return ResponseEntity.ok(commentService.findAllByPlanId(planId));
   }
 
-  // 일정의 댓글 단건 조회
+  /* 일정의 댓글 단건 조회 */
   @GetMapping("/{commentId}")
   public ResponseEntity<FindResponseDto> findById(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
@@ -51,7 +51,7 @@ public class CommentController {
     return ResponseEntity.ok(commentService.findById(planId, commentId));
   }
 
-  // 댓글 수정
+  /* 댓글 수정 */
   @PatchMapping("/{commentId}")
   public ResponseEntity<String> updateComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
@@ -65,7 +65,7 @@ public class CommentController {
   }
 
 
-  // 댓글 삭제
+  /* 댓글 삭제 */
   @DeleteMapping("/{commentId}")
   public ResponseEntity<String> deleteComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,

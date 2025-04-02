@@ -12,7 +12,6 @@ import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
 import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.exception.InvalidRequestException;
-import com.example.scheduleappserverjpa.exception.UnauthorizedAccessException;
 import com.example.scheduleappserverjpa.repository.CommentRepository;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
@@ -35,7 +34,7 @@ public class PlanServiceImpl implements PlanService {
   private final CommentRepository commentRepository;
   private final PasswordEncoder passwordEncoder;
 
-  // 일정 추가
+  /* 일정 추가 */
   @Override
   public SaveResponseDto savePlan(SaveRequestDto dto, Long loginId) {
     // 로그인한 유저 데이터 검증 및 조회
@@ -54,7 +53,7 @@ public class PlanServiceImpl implements PlanService {
     return SaveResponseDto.from(saved);
   }
 
-  // 일정 전체 조회
+  /* 일정 전체 조회 */
   @Override
   public List<FindResponseDto> findByAll() {
     return planRepository.findAll().stream()
@@ -62,7 +61,7 @@ public class PlanServiceImpl implements PlanService {
             .toList();
   }
 
-  // 일정 단건 조회
+  /* 일정 단건 조회 */
   @Override
   public FindResponseDto findById(Long id) {
     // 데이터 검증 및 조회
@@ -72,7 +71,7 @@ public class PlanServiceImpl implements PlanService {
     return from(findPlan);
   }
 
-  // 일정 수정
+  /* 일정 수정 */
   @Transactional
   @Override
   public void updatePlan(Long planId, Long userId, UpdateRequestDto dto) {
@@ -96,7 +95,7 @@ public class PlanServiceImpl implements PlanService {
     findPlan.updateContents(setContents);
   }
 
-  // 일정 삭제
+  /* 일정 삭제 */
   @Override
   public void deletePlan(Long planId, Long userId, DeleteRequestDto dto) {
     // 데이터 검증 및 조회
@@ -114,7 +113,7 @@ public class PlanServiceImpl implements PlanService {
     planRepository.delete(findPlan);
   }
 
-  // 페이징 조회
+  /* 페이징 조회 */
   @Override
   public PageResponseDto page(int pageNumber, int pageSize) {
     // pageable 객체 :: 정렬방향과 속성 properties 를 지정하기 위해 Sort 객체를 생성
