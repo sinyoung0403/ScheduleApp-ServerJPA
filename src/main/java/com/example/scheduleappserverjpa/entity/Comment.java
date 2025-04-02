@@ -4,6 +4,8 @@ import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Entity
@@ -19,10 +21,12 @@ public class Comment extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private User user;
 
   @ManyToOne
   @JoinColumn(name = "plan_id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Plan plan;
 
   public Comment(CreateRequestDto dto) {

@@ -13,6 +13,7 @@ import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.exception.InvalidRequestException;
 import com.example.scheduleappserverjpa.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,11 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
+  /* 회원가입 */
   @Override
   public SignUpResponseDto signUp(SignUpRequestDto dto) {
+    // 데이터 검증
+    userRepository.checkEmailDuplicate(dto.getEmail());
     // pwd 암호화
     String encode = passwordEncoder.encode(dto.getPwd());
     // user Entity 생성
@@ -37,71 +41,73 @@ public class UserServiceImpl implements UserService {
     return SignUpResponseDto.from(saved);
   }
 
+  /* 모든 유저 조회 */
   @Override
   public List<FindResponseDto> findAll() {
-    List<User> list = userRepository.findAll();
-    return list.stream().map(FindResponseDto::from).toList();
+    return userRepository.findAll().stream()
+            .map(FindResponseDto::from)
+            .toList();
   }
 
+  /* 단건 유저 조회 */
   @Override
   public FindResponseDto findById(Long id) {
-    User user = userRepository.findByIdOrElseThrow(id);
-    return FindResponseDto.from(user);
+    return FindResponseDto.from(userRepository.findByIdOrElseThrow(id));
   }
 
+  /* 유저 수정 */
   @Transactional
   @Override
   public void update(Long id, UpdateRequestDto dto) {
-    // dto valid 확인
+    // DTO 데이터 검증
     if (!dto.isValid()) {
       throw new InvalidRequestException("입력값이 잘못되었습니다.");
     }
 
-    // id 에 해당하는 유저 조회
+    // 데이터 검증 및 조회
     User findUser = userRepository.findByIdOrElseThrow(id);
 
-    // 해당 유저의 pwd 를 비교하기
-    Boolean isMatch = passwordEncoder.matches(dto.getPwd(), findUser.getPwd());
-
-    if(!isMatch) {
+    // 입력한 PWD 검증
+    if (!passwordEncoder.matches(dto.getPwd(), findUser.getPwd())) {
       throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
     }
 
-    // 만약 널 값 ?비어있다면, 그냥 기존의 값을 유지하도록
+    // 기존 값을 유지하거나 입력된 값으로 변경
     String setName = (StringUtils.isEmpty(dto.getName())) ? findUser.getName() : dto.getName();
     String setEmail = (StringUtils.isEmpty(dto.getEmail())) ? findUser.getEmail() : dto.getEmail();
 
-    // 그리고 해당 값을 추가해줍니다.
+    // 유저 업데이트
     findUser.updateName(setName);
     findUser.updateEmail(setEmail);
   }
 
+  /* 유저 삭제 */
   @Override
   public void delete(Long id, DeleteRequestDto dto) {
-    // id 에 해당하는 유저 조회
+    // 데이터 검증 및 조회
     User findUser = userRepository.findByIdOrElseThrow(id);
 
-    // 해당 유저의 pwd 를 비교하기
-    Boolean isMatch = passwordEncoder.matches(dto.getPwd(), findUser.getPwd());
-
-    if(!isMatch) {
+    // 입력한 PWD 검증
+    if (!passwordEncoder.matches(dto.getPwd(), findUser.getPwd())) {
       throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
     }
 
+    // 유저 삭제
     userRepository.delete(findUser);
   }
 
+  /* 로그인 */
   @Override
   public LoginDto login(LoginRequestDto dto) {
-    // 이메일에 맞는 유저 찾기
+    // 데이터 검증 및 조회
     User findUser = userRepository.findByEmailOrElseThrow(dto.getEmail());
 
-    // 유저의 비밀번호를 가져와서 비교
-    boolean isMatch = passwordEncoder.matches(dto.getPwd(), findUser.getPwd());
-
-    if(!isMatch) {
+    // 입력한 PWD 검증
+    if (!passwordEncoder.matches(dto.getPwd(), findUser.getPwd())) {
       throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
     }
+
+    // DTO 로 변환 후 반환
     return LoginDto.from(findUser);
   }
 }

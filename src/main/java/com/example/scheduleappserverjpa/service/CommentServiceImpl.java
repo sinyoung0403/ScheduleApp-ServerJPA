@@ -1,13 +1,15 @@
 package com.example.scheduleappserverjpa.service;
 
+import com.example.scheduleappserverjpa.config.PasswordEncoder;
 import com.example.scheduleappserverjpa.dto.comment.request.CreateRequestDto;
+import com.example.scheduleappserverjpa.dto.comment.request.DeleteRequestDto;
 import com.example.scheduleappserverjpa.dto.comment.response.CreateResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.entity.Comment;
 import com.example.scheduleappserverjpa.entity.Plan;
 import com.example.scheduleappserverjpa.entity.User;
-import com.example.scheduleappserverjpa.exception.DataNotFoundException;
+import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.repository.CommentRepository;
 import com.example.scheduleappserverjpa.repository.PlanRepository;
 import com.example.scheduleappserverjpa.repository.UserRepository;
@@ -24,84 +26,100 @@ public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
   private final UserRepository userRepository;
   private final PlanRepository planRepository;
+  private final PasswordEncoder passwordEncoder;
 
+  /* 댓글 생성 */
   @Override
   public CreateResponseDto createComment(Long planId, Long userId, CreateRequestDto dto) {
-    // 먼저 id 에 해당하는 유저를 유저 테이블에서 찾고.
-    Plan findPlan = planRepository.findById(planId)
-            .orElseThrow(() -> new DataNotFoundException("댓글을 생성하기 이전에, 해당 일정이 존재하지 않습니다."));
-    User findUser = userRepository.findById(userId)
-            .orElseThrow(() -> new DataNotFoundException("댓글을 생성하기 이전에, 해당 유저가 존재하지 않습니다."));
+    // 데이터 검증 및 조회
+    Plan findPlan = planRepository.findByIdOrElseThrow(planId);
+    User findUser = userRepository.findByIdOrElseThrow(userId);
 
-    // Entity 를 dto 에 맞게 새로 만들고.
+    // DTO 를 Entity 로 변환
     Comment comment = new Comment(dto);
 
+    // 연관관계 주입
     comment.setPlan(findPlan);
     comment.setUser(findUser);
 
+    // 댓글 저장
     Comment saved = commentRepository.save(comment);
+
+    // Dto 로 변환 후 반환
     return CreateResponseDto.from(saved);
   }
 
+  /* 일정의 댓글 전체 조회 */
   @Override
   public List<FindResponseDto> findAllByPlanId(Long planId) {
-    // planId 가 존재하지 않을 경우도 고려할 것.
-    planRepository.findByIdOrElseThrow(planId);
+    // 데이터 검증
+    planRepository.validateExistenceById(planId);
 
-    // plan id 가 일치하는 경우를 찾기.
+    // Plan ID 가 일치하는 댓글 조회
     List<Comment> commentList = commentRepository.findByPlan_Id(planId);
-    return commentList.stream().map(FindResponseDto::from).toList();
+
+    // DTO 로 변환 후 반환
+    return commentList.stream()
+            .map(FindResponseDto::from)
+            .toList();
   }
 
+  /* 일정의 댓글 단건 조회 */
   @Override
   public FindResponseDto findById(Long planId, Long commentId) {
-    // 똑같이 존재하지 않을 경우 고려.
-    planRepository.findByIdOrElseThrow(planId);
-    // 유저 아이디와, id, 댓글 모두 조회
+    // 데이터 검증
+    planRepository.validateExistenceById(planId);
+
+    // Comment ID 가 일치하는 댓글 조회
     Comment comment = commentRepository.findByIdAndPlan_IdOrElseThrow(commentId, planId);
+
+    // DTO 로 변환 후 반환
     return FindResponseDto.from(comment);
   }
 
+  /* 댓글 수정 */
   @Transactional // 확장성 고려
   @Override
   public void updateComment(Long planId, Long userId, Long commentId, UpdateRequestDto dto) {
-    // 일정 테이블과 유저 테이블에 해당하는 아이디가 있는지 없는지부터 조회 이거는 따로 빼라네 'ㅡ' ??
-    if (!planRepository.existsById(planId) || !commentRepository.existsByPlan_Id(planId)) {
-      throw new DataNotFoundException("해당 일정이 존재하지 않습니다.");
-    }
+    // 데이터 검증
+    verifyAllExistOrThrow(planId, userId, commentId);
 
-    if (!userRepository.existsById(userId)) { // 일어나지는 않을 거임.
-      throw new DataNotFoundException("해당 유저가 존재하지 않습니다.");
-    }
+    // 로그인된 유저의 댓글 수정 접근 검증 및 조회
+    Comment comment = commentRepository.findByPlan_IdAndUser_IdAndIdOrElseThrow(planId, userId, commentId);
 
-    if (!commentRepository.existsById(commentId)) {
-      throw new DataNotFoundException("해당 댓글이 존재하지 않습니다.");
-    }
-
-    Comment comment = commentRepository.findByPlan_IdAndUser_IdAndId(planId, userId, commentId)
-            .orElseThrow(() -> new DataNotFoundException("해당 댓글을 수정할 수 없습니다."));
-
+    // 댓글 업데이트
     comment.updateContent(dto.getContent());
   }
 
-  @Transactional // 확장성 고려
+  /* 댓글 삭제 */
+  @Transactional
   @Override
-  public void deleteComment(Long planId, Long userId, Long commentId) {
-    if (!planRepository.existsById(planId) || !commentRepository.existsByPlan_Id(planId)) {
-      throw new DataNotFoundException("해당 일정이 존재하지 않습니다.");
+  public void deleteComment(Long planId, Long userId, Long commentId, DeleteRequestDto dto) {
+    // 데이터 검증
+    verifyAllExistOrThrow(planId, userId, commentId);
+
+    // 로그인된 유저의 댓글 삭제 접근 검증 및 조회
+    Comment findComment = commentRepository.findByPlan_IdAndUser_IdAndIdOrElseThrow(planId, userId, commentId);
+
+    // 입력한 PWD 검증
+    if (!passwordEncoder.matches(dto.getPwd(), findComment.getUser().getPwd())) {
+      throw new InvalidPasswordException("비밀번호가 틀렸습니다.");
     }
 
-    if (!userRepository.existsById(userId)) {
-      throw new DataNotFoundException("해당 유저가 존재하지 않습니다.");
-    }
+    // 댓글 삭제
+    commentRepository.delete(findComment);
+  }
 
-    if (!commentRepository.existsById(commentId)) {
-      throw new DataNotFoundException("해당 댓글이 존재하지 않습니다.");
-    }
+  /* 데이터 검증 */
+  private void verifyAllExistOrThrow(Long planId, Long userId, Long commentId) {
+    // 일정 데이터 검증
+    planRepository.validateExistenceById(planId);
+    commentRepository.validateExistenceByPlan_Id(planId);
 
-    Comment comment = commentRepository.findByPlan_IdAndUser_IdAndId(planId, userId, commentId)
-            .orElseThrow(() -> new DataNotFoundException("해당 댓글을 삭제할 수 없습니다."));
+    // 유저 데이터 검증
+    userRepository.validateExistenceById(userId);
 
-    commentRepository.delete(comment);
+    // 댓글 데이터 검증
+    commentRepository.validateExistenceById(commentId);
   }
 }

@@ -1,6 +1,7 @@
 package com.example.scheduleappserverjpa.dto.plan.request;
 
 import io.micrometer.common.util.StringUtils;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,8 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UpdateRequestDto {
 
+  @Size(max = 10)
   private String title;
-
 
   private String contents;
 
