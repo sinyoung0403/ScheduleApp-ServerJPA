@@ -15,12 +15,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     return findById(id).orElseThrow(() -> new DataNotFoundException(id + ", 해당 유저가 존재하지 않습니다."));
   }
 
-  // Name 으로 찾기
-  Optional<User> findUserByName(String name);
-
-  default User findUserByNameOrElseThrow(String name) {
-    return findUserByName(name).orElseThrow(() -> new DataNotFoundException(name + ", 해당 이름은 존재하지 않습니다."));
+  /* 유저 존재 여부 확인 */
+  default void validateExistenceById(Long id) {
+    if (!existsById(id)) {
+      throw new DataNotFoundException("해당 유저가 존재하지 않습니다.");
+    }
   }
+
 
   // login : email 과 pwd 일치하는지 확인
   Optional<User> findByEmailAndPwd(String email, String pwd);
@@ -33,13 +34,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByIdAndPwd(Long id, String pwd);
 
   default User findByIdAndPwdOrElseThrow(Long id, String pwd) {
-    return findByIdAndPwd(id, pwd).orElseThrow(()-> new InvalidPasswordException(id + ", 해당 유저와 비밀번호가 일치하지 않습니다."));
+    return findByIdAndPwd(id, pwd).orElseThrow(() -> new InvalidPasswordException(id + ", 해당 유저와 비밀번호가 일치하지 않습니다."));
   }
 
   Optional<User> findByEmail(String email);
 
   default User findByEmailOrElseThrow(String email) {
-    return findByEmail(email).orElseThrow(()->new DataNotFoundException("해당하는 이메일이 존재하지 않습니다."));
+    return findByEmail(email).orElseThrow(() -> new DataNotFoundException("해당하는 이메일이 존재하지 않습니다."));
   }
+
   User findDistinctByEmail(String email);
 }
