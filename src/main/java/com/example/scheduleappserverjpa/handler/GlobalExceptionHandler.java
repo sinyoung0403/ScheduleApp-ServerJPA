@@ -3,6 +3,7 @@ package com.example.scheduleappserverjpa.handler;
 import com.example.scheduleappserverjpa.exception.DataNotFoundException;
 import com.example.scheduleappserverjpa.exception.InvalidPasswordException;
 import com.example.scheduleappserverjpa.exception.InvalidRequestException;
+import com.example.scheduleappserverjpa.exception.UnauthorizedAccessException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
   // 비밀번호가 일치하지 않을 경우
   @ExceptionHandler(InvalidPasswordException.class)
   public ResponseEntity<List<String>> handleInvalidPasswordException(InvalidPasswordException ex) {
+    return new ResponseEntity<>(errorToList(ex, "UNAUTHORIZED"), HttpStatus.UNAUTHORIZED);
+  }
+
+  // 권한이 없는 경우
+  @ExceptionHandler(UnauthorizedAccessException.class)
+  public ResponseEntity<List<String>> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
     return new ResponseEntity<>(errorToList(ex, "UNAUTHORIZED"), HttpStatus.UNAUTHORIZED);
   }
 

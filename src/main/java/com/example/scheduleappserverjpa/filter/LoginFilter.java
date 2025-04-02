@@ -1,5 +1,6 @@
 package com.example.scheduleappserverjpa.filter;
 
+import com.example.scheduleappserverjpa.exception.UnauthorizedAccessException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +34,7 @@ public class LoginFilter implements Filter {
 
       // 세션이 없거나 세션 키가 널이라면, 로그인 되지 않은 것.
       if (session == null || session.getAttribute("loginUser") == null) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        throw new UnauthorizedAccessException("로그인되지 않았습니다.");
       }
     }
     filterChain.doFilter(servletRequest, servletResponse);
