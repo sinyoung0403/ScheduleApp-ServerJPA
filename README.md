@@ -373,7 +373,7 @@ create table comment
 
 6️⃣ 이후의 Branch 수정 사항
 
-➕ UnauthorizedAccessException 예외 처리가 추가됨.
+➕ `UnauthorizedAccessException` 예외 처리가 추가됨.
 
 ➕ 응답 코드 명확성을 위해 일부 예외의 상태 코드가 정리.
 
@@ -480,9 +480,28 @@ create table comment
 
 4️⃣ 응답 DTO (`PageResponseDto`)
 
-- `pageNumber`를 1부터 시작하도록 변환하여 반환.
+- `pageNumber`를 1부터 시작하도록 변환하여 반환
 
-- 총 페이지 수(`totalPages`), 전체 항목 수(`totalElements`) 포함.
+- 총 페이지 수(`totalPages`), 전체 항목 수(`totalElements`) 포함
+
+### Refactoring
+
+➕ 컨트롤러에서만 Session 처리하도록 수정
+
+➕ 로그인한 세션을 이용하여 유저, 할일, 댓글 접근
+
+➕ 권한 접근 불가 시 `403 Forbidden` 에러 반환
+
+➕ 유저 수정, 삭제 시 비밀번호 인증/인가 기능 구현
+
+➕ 할일 삭제 시 비밀번호 인증/인가 기능 구현
+
+➕ 댓글 삭제 시 비밀번호 인증/인가 기능 구현
+
+➕ Cascade 제약조건 추가 
+- (유저 삭제 -> 해당 유저의 할일, 댓글 삭제)
+- (할일 삭제 -> 해당 할일의 댓글 삭제)
+
 
 
 ## 📚 Stacks
