@@ -259,7 +259,154 @@ create table comment
 - `user_id (Long)`: 작성자 정보
 
 
+### Lv 3. 회원가입  `필수`
 
+> Branch : Level03 참고
+
+- [x]  유저에 `비밀번호` 필드를 추가합니다.
+
+1️⃣ 유저에 비밀번호 필드 추가
+
+- `private String pwd` 필드 추가
+
+2️⃣ Request Dto 에 비밀번호 추가
+
+- `private String pwd`
+
+
+### Lv 4. 로그인(인증)  `필수`
+
+- [x] `이메일`과 `비밀번호`를 활용해 로그인 기능을 구현합니다.
+- [x] 회원가입, 로그인 요청은 인증 처리에서 제외합니다.
+- [x] 예외처리- 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 `HTTP Status code 401` 을 반환합니다.
+
+1️⃣ 로그인 (/users/login)
+
+- 사용자가 이메일(email)과 비밀번호(pwd)를 입력하면 로그인 검증을 수행한다.
+
+- 로그인 성공 시 `HttpSession` 을 생성하고, 로그인한 유저 정보를 세션에 저장한다.
+
+- 로그인 검증 실패 시 예외가 발생하며, `401 Unauthorized` 상태 코드가 반환된다.
+
+2️⃣ 로그아웃 (/users/logout)
+
+- `POST /users/logout` 요청을 받으면 현재 세션을 가져와 `session.invalidate()`를 호출하여 세션을 삭제한다.
+
+3️⃣ 인증 필터 (LoginFilter)
+
+- `Filter` 를 구현하여 로그인 여부를 검증하는 `LoginFilter` 를 작성하였다.
+
+- 요청된 `URL` 이 화이트 리스트`(/, /users/signup, /users/login)`에 포함되지 않은 경우, 로그인 여부를 확인한다.
+
+- 세션이 없거나, 세션에 저장된 `loginUser` 가 없으면 `401 Unauthorized` 예외를 발생시킨다.
+
+- 필터 내부에서 `PatternMatchUtils.simpleMatch(WHITE_LIST, string)` 을 사용하여 화이트 리스트 검사를 수행한다.
+
+- 인증이 필요한 요청은 로그인 여부를 확인한 후 `filterChain.doFilter(servletRequest, servletResponse)` 를 호출하여 다음 필터로 전달한다.
+
+4️⃣ 필터 등록 (WebConfig)
+
+- `@Configuration` 을 활용하여 `FilterRegistrationBean` 을 통해 `LoginFilter` 를 등록한다.
+
+- 필터의 실행 순서를 `setOrder(1)` 로 설정하여 가장 먼저 실행되도록 한다.
+
+- `filterRegistrationBean.addUrlPatterns("/*")` 을 통해 모든 요청`(/*)`에 대해 필터를 적용한다.
+
+5️⃣ 예외 처리
+- 로그인 시 이메일 또는 비밀번호가 일치하지 않으면 `401 Unauthorized` 상태 코드가 반환된다.
+
+- 로그인되지 않은 사용자가 인증이 필요한 `URL` 에 접근하면 `401 Unauthorized` 예외가 발생한다.
+    - 이후의 branch 에서는 `401 Unauthorized` 대신 `403 Forbidden` 예외 발생
+
+
+
+### Lv 5. 다양한 예외처리 적용하기  `도전`
+
+- [x]  Validation 을 활용해 다양한 예외처리를 적용
+- [x]  정해진 예외처리 항목이 있는것이 아닌 프로젝트를 분석하고 예외사항을 지정
+- [x]  할일 제목은 10글자 이내, 유저명은 4글자 이내
+- [x]  `@Pattern`을 사용해서 회원 가입 Email 데이터 검증
+
+1️⃣ `@Valid` 사용 (@RequestBody DTO 검증)
+
+- `@Valid` 를 적용하여 요청 본문의 값을 검증함.
+
+- `GlobalExceptionHandler()` 에서 `ConstraintViolationException` 에외 처리
+
+2️⃣ `@Validated` 사용 (`@PathVariable`, `@RequestParam` 검증)
+
+- `@Validated` 를 적용하여 `@PathVariable`, `@RequestParam` 사용하여 검증함.
+
+- `GlobalExceptionHandler()` 에서 `MethodArgumentNotValidException` 에외 처리 
+
+3️⃣ 데이터 조회 및 유효성 검사 관련 예외 처리
+
+- 데이터 없음 (`DataNotFoundException`)
+
+  → 조회하려는 데이터가 없을 경우 `404 Not Found` 반환.
+
+- 잘못된 입력값 (`InvalidRequestException`)
+
+  → 유효하지 않은 요청이 들어오면 `400 Bad Request` 반환.
+
+- 비밀번호 불일치 (`InvalidPasswordException`)
+
+     → 로그인 시 입력한 비밀번호가 올바르지 않으면 `401 Unauthorized` 반환.
+
+4️⃣ 클라이언트 요청 관련 예외 처리
+
+- 파라미터 누락 (`MissingServletRequestParameterException`)
+
+   → 요청 시 필수 파라미터가 없을 경우 `400 Bad Request` 반환.
+
+- 요청 본문이 없을 경우 (`HttpMessageNotReadableException`)
+
+    → 요청에 body 가 포함되지 않았을 때 `400 Bad Request` 반환.
+
+6️⃣ 이후의 Branch 수정 사항
+
+➕ UnauthorizedAccessException 예외 처리가 추가됨.
+
+➕ 응답 코드 명확성을 위해 일부 예외의 상태 코드가 정리.
+
+### Lv 6. 비밀번호 암호화  `도전`
+
+- [x]  Lv.3에서 추가한 `비밀번호` 필드에 들어가는 비밀번호를 암호화합니다.
+
+1️⃣ PasswordEncoder (암호화 클래스)
+
+- `BCrypt` 를 사용하여 비밀번호 암호화 및 비교 기능을 제공하는 클래스
+
+- `encode(String rawPassword)`: 사용자의 원본 비밀번호를 `BCrypt` 알고리즘을 이용해 암호화.
+
+- `matches(String rawPassword, String encodedPassword)`: 사용자가 입력한 비밀번호와 DB에 저장된 암호화된 비밀번호를 비교.
+
+2️⃣ UserController (회원 관련 API 컨트롤러)
+
+1. `@PostMapping("/signup")` - 유저 회원가입
+
+- 사용자가 입력한 정보를 비밀번호를 암호화한 후, 새로운 회원을 DB에 저장.
+
+2. `@PostMapping("/login")` - 로그인
+
+- 사용자의 이메일과 비밀번호를 검증 후 세션에 저장.
+
+3️⃣ 이후의 Branch 수정 사항
+
+➕ `@PatchMapping` - 유저 정보 수정
+
+- 사용자가 입력한 비밀번호를 검증 후 회원 정보 수정 요청 처리.
+
+➕ `@DeleteMapping` - 유저 삭제
+
+- 사용자가 입력한 비밀번호를 검증 후 회원 삭제 요청 처리.
+
+### Lv 7. 댓글 CRUD  `도전`
+
+- [x]  생성한 일정에 댓글을 남길 수 있습니다.
+- [x]  댓글과 일정은 연관관계를 가집니다. 
+- [x]  댓글을 저장, 조회, 수정, 삭제할 수 있습니다.
+- [x]  댓글은 `댓글 내용`, `작성일`, `수정일`, `유저 고유 식별자`, `일정 고유 식별자` 필드를 가집니다.
 
 
 
