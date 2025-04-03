@@ -63,7 +63,7 @@ cd ScheduleApp-ServerJPA
 
 ---
 
-## 📝 API 명세
+## 📝 API 명세서 [PostMan API Document]
 
 > https://documenter.getpostman.com/view/43154257/2sB2cSgip2
 
@@ -129,6 +129,139 @@ create table comment
         on delete cascade
 )
 ```
+
+## 요구사항 확인
+
+### Lv 1. 일정 CRUD  `필수`
+
+> Branch : Level01 참고
+
+- [x] 일정을 생성, 조회, 수정, 삭제할 수 있습니다.
+
+- [x] 일정은 일정의 고유 ID, 제목, 내용, 작성일, 수정일 필드를 가집니다. 
+
+1️⃣ 일정 생성
+
+> `POST` /plans
+
+- 일정 정보를 입력하여 새 일정을 생성합니다.
+
+- 응답 코드: 201 Created
+
+2️⃣ 일정 전체 조회
+> `GET` /plans
+
+- 저장된 모든 일정을 조회합니다.
+
+- 응답 코드: 200 OK
+
+3️⃣ 일정 단건 조회
+
+> `GET` /plans/{id}
+
+- 특정 ID에 해당하는 일정을 조회합니다.
+
+- 응답 코드: 200 OK
+
+4️⃣ 일정 수정
+
+> `PATCH` /plans/{id}
+
+- 일정의 제목과 내용을 수정합니다.
+
+- 응답 코드: 200 OK
+
+5️⃣ 일정 삭제
+
+> `DELETE` /plans/{id}
+
+- 특정 ID의 일정을 삭제합니다.
+
+6️⃣ 일정 필드
+
+- `id (Long)`: 일정의 고유 ID
+
+- `title (String)`: 일정 제목 (필수 입력)
+
+- `contents (String)`: 일정 내용 (필수 입력)
+
+- `user_id (Long)`: 작성자 정보
+
+- `createdAt (LocalDateTime)` : 작성일
+
+- `updatedAt (LocalDateTime)` : 수정일
+
+
+### Lv 2. 유저 CRUD  `필수`
+
+> Branch : Level02 참고
+
+- [x]  유저를 생성, 조회, 수정, 삭제할 수 있습니다.
+- [x]  유저는 `유저명`, `이메일`, `작성일` , `수정일` 같은 필드를 가집니다.
+- [x]  연관관계 구현
+
+
+1️⃣ 유저 생성 (회원가입)
+
+> `POST` /users/signup
+
+- 유저 정보를 입력하여 새로운 회원을 등록합니다.
+
+- 응답 코드: 201 Created
+
+2️⃣ 유저 전체 조회
+
+> `GET` /users
+
+- 등록된 모든 유저 정보를 조회합니다.
+
+- 응답 코드: 200 OK
+
+3️⃣ 유저 단건 조회
+
+> `GET` /users/{id}
+
+- 특정 ID에 해당하는 유저 정보를 조회합니다.
+
+- 응답 코드: 200 OK
+
+4️⃣ 유저 정보 수정
+
+> `PATCH` /users/{id}
+
+- 유저의 이름 또는 이메일을 수정합니다.
+
+- 응답 코드: 200 OK
+
+5️⃣ 유저 삭제
+
+> `DELETE` /users/{id}
+
+- 특정 ID의 유저를 삭제합니다.
+
+- 응답 코드: 200 OK
+
+
+6️⃣ 유저는 아래 필드를 가집니다.
+
+- `id (Long)`: 유저의 고유 ID
+
+- `username (String)`: 유저명 (필수 입력)
+
+- `email (String)`: 유저 이메일 (필수 입력)
+
+- `createdAt (LocalDateTime)`: 유저 생성일 
+
+- `updatedAt (LocalDateTime)`: 유저 수정일 
+
+7️⃣ 일정은 유저 고유 식별자 필드를 가집니다.
+
+- `user_id (Long)`: 작성자 정보
+
+
+
+
+
 
 ## 📚 Stacks
 
