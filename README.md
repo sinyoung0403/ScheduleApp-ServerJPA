@@ -43,7 +43,7 @@ cd ScheduleApp-ServerJPA
 ### 2. My SQL 설정 ( DB 실행 )
 
 - MySQL 이 설치되어 있어야 합니다.
-- `src/main/resources/sql` 에 있는 `sql.sql` 파일을 실행시켜주세요.
+- `src/main/resources/sql` 에 있는 `schedule.sql` 파일을 실행시켜주세요.
 
 ### 3. 환경변수 설정
 
@@ -65,13 +65,7 @@ cd ScheduleApp-ServerJPA
 
 ## 📝 API 명세
 
-### 1. 일정 API
-
-![일정API](https://github.com/user-attachments/assets/5dc72a18-c564-42e9-8c3d-2deec09b70e4)
-
-### 2. 작성자 API
-
-![작성자 API](https://github.com/user-attachments/assets/8a559907-9d56-48f8-8f1d-c4bb249e02a0)
+> https://documenter.getpostman.com/view/43154257/2sB2cSgip2
 
 
 ---
@@ -133,90 +127,6 @@ create table comment
         on delete cascade
 )
 ```
-
----
-
-## 📜 PostMan Test
-
-### 1. Author
-
-#### 1) 작성자 추가
-
-![image](https://github.com/user-attachments/assets/1b4e571b-cedf-444c-af1c-f488072001e6)
-
-#### 2) 작성자 전부 조회
-
-![image](https://github.com/user-attachments/assets/7263c306-533c-48db-8550-342c4659c2f9)
-
-#### 3) 작성자 단건 조회
-
-![image](https://github.com/user-attachments/assets/17d9e056-b2f0-466b-8bb5-c842612e268a)
-
-#### 4) 작성자 수정
-
-![image](https://github.com/user-attachments/assets/3ca5a079-88bd-43e9-9565-3887e1d2ccef)
-
-#### 5) 작성자 삭제
-
-![image](https://github.com/user-attachments/assets/ae0b92ff-2b59-4368-87d0-94eb0edd9715)
-
-### 2. Plan
-
-#### 1) 할일 추가
-
-![image](https://github.com/user-attachments/assets/2faaba39-f1d4-49b8-8a2e-297a85648918)
-
-#### 2) 할일 전부 조회 (작성자 이름과 수정일을 기준으로)
-
-![image](https://github.com/user-attachments/assets/06232449-24cb-4824-bc81-5856ef0cf59a)
-
-#### 3) 할일 단건 조회 (할일의 식별자)
-
-![image](https://github.com/user-attachments/assets/5b62d3a4-b9d8-4f16-9a49-6492d00f98ba)
-
-#### 4) 할일 단건 조회 (작성자의 식별자)
-
-![image](https://github.com/user-attachments/assets/5c036eb4-bb2d-4c47-bdfc-84b3dae0049a)
-
-#### 5) 할일 수정
-
-![image](https://github.com/user-attachments/assets/1c0624a8-88a4-4e20-8413-6c5075956547)
-
-#### 6) 할일 삭제
-
-![image](https://github.com/user-attachments/assets/ea293b06-9eac-472e-bd78-fc17365ccb29)
-
-#### 7) 할일 페이징 조회
-
-![image](https://github.com/user-attachments/assets/1cf1d943-5956-4cea-a708-4d80fafa16c7)
-
-### 3. Error
-
-#### 1) MissingServletRequestParameterException
-
-![파라미터가 없을 경우](https://github.com/user-attachments/assets/63f9e49f-6049-47d3-bb92-e1f9e08e4854)
-
-#### 2) InvalidPasswordException
-
-![비밀번호가 잘못되었을 경우](https://github.com/user-attachments/assets/952b3c7c-dec6-4a48-b220-fd7719826961)
-
-#### 3) DataNotFoundException // 데이터 조회 불가
-
-![데이터가 없을 경우](https://github.com/user-attachments/assets/ad276278-0eae-482a-b2ae-29c16b605120)
-
-#### 4) ConstraintViolationException
-
-![validated 에러](https://github.com/user-attachments/assets/05e8bddd-1ac0-47b9-a99f-496532140e47)
-
-#### 5) MethodArgumentNotValidException
-
-![valid 에러](https://github.com/user-attachments/assets/8a658987-d463-47ff-97af-43b2677d8374)
-
-#### 6) InvalidInputException
-
-![InvalidInputException](https://github.com/user-attachments/assets/05e790d6-c969-40e7-83f4-e2ab4b734b2d)
-
-
 
 ## 📚 Stacks
 
