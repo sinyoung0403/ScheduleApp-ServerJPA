@@ -191,6 +191,7 @@ create table comment
 
 - `updatedAt (LocalDateTime)` : 수정일
 
+---
 
 ### Lv 2. 유저 CRUD  `필수`
 
@@ -200,6 +201,7 @@ create table comment
 - [x]  유저는 `유저명`, `이메일`, `작성일` , `수정일` 같은 필드를 가집니다.
 - [x]  연관관계 구현
 
+---
 
 1️⃣ 유저 생성 (회원가입)
 
@@ -258,6 +260,7 @@ create table comment
 
 - `user_id (Long)`: 작성자 정보
 
+---
 
 ### Lv 3. 회원가입  `필수`
 
@@ -273,8 +276,11 @@ create table comment
 
 - `private String pwd`
 
+---
 
 ### Lv 4. 로그인(인증)  `필수`
+
+> Branch : Level04 참고
 
 - [x] `이메일`과 `비밀번호`를 활용해 로그인 기능을 구현합니다.
 - [x] 회원가입, 로그인 요청은 인증 처리에서 제외합니다.
@@ -318,9 +324,11 @@ create table comment
 - 로그인되지 않은 사용자가 인증이 필요한 `URL` 에 접근하면 `401 Unauthorized` 예외가 발생한다.
     - 이후의 branch 에서는 `401 Unauthorized` 대신 `403 Forbidden` 예외 발생
 
-
-
+---
+    
 ### Lv 5. 다양한 예외처리 적용하기  `도전`
+
+> Branch : Level05 참고
 
 - [x]  Validation 을 활용해 다양한 예외처리를 적용
 - [x]  정해진 예외처리 항목이 있는것이 아닌 프로젝트를 분석하고 예외사항을 지정
@@ -401,13 +409,80 @@ create table comment
 
 - 사용자가 입력한 비밀번호를 검증 후 회원 삭제 요청 처리.
 
+---
+
 ### Lv 7. 댓글 CRUD  `도전`
+
+> Branch : Level07 참고
 
 - [x]  생성한 일정에 댓글을 남길 수 있습니다.
 - [x]  댓글과 일정은 연관관계를 가집니다. 
 - [x]  댓글을 저장, 조회, 수정, 삭제할 수 있습니다.
 - [x]  댓글은 `댓글 내용`, `작성일`, `수정일`, `유저 고유 식별자`, `일정 고유 식별자` 필드를 가집니다.
 
+
+1️⃣ `@PostMapping` - 댓글 생성
+
+- 로그인한 사용자가 특정 일정(planId)에 댓글을 등록.
+
+
+2️⃣ `@GetMapping` - 특정 일정의 모든 댓글 조회
+
+- planId를 기준으로 해당 일정에 작성된 모든 댓글 조회.
+
+
+3️⃣ `@GetMapping("/{commentId}")` - 특정 댓글 조회 
+
+- planId 내에서 특정 commentId에 해당하는 댓글 조회.
+
+4️⃣ `@PatchMapping("/{commentId}")` - 댓글 수정
+
+- 댓글 작성자만 수정 가능 (로그인 유저 ID 확인).
+
+5️⃣ `@DeleteMapping("/{commentId}")` - 댓글 삭제
+
+- 댓글 작성자만 삭제 가능 (로그인 유저 ID 확인)
+
+6️⃣ 댓글은 아래 필드를 가집니다.
+
+- `id (Long)` - 댓글의 고유 ID (PK)
+- `content (String)` - 댓글 내용 (Not Null)
+- `user (User)` - 댓글을 작성한 사용자 (ManyToOne)
+- `plan (Plan)` - 댓글이 속한 일정 (ManyToOne)
+
+### Lv 8. 일정 페이징 조회  `도전`
+
+- [x]  일정을 Spring Data JPA의 `Pageable`과 `Page` 인터페이스를 활용하여 페이지네이션을 구현
+- [x]  `페이지 번호`와 `페이지 크기`를 쿼리 파라미터로 전달
+- [x]  `할일 제목`, `할일 내용`, `댓글 개수`, `일정 작성일`, `일정 수정일`, `일정 작성 유저명` 필드를 조회
+- [x]  디폴트 `페이지 크기`는 10으로 적용
+- [x]  일정의 `수정일`을 기준으로 내림차순 정렬
+
+1️⃣ 컨트롤러 (PlanController)
+
+- `/pages` 엔드포인트에서 페이지네이션 조회 수행
+
+- 쿼리 파라미터 `(pageNumber, pageSize)` 를 사용하여 페이지네이션 적용
+
+- 기본 페이지 크기(pageSize)는 10으로 설정
+
+- `pageNumber` - 1을 사용하여 0부터 시작하는 인덱스 변환
+
+2️⃣ 서비스 (PlanService)
+
+- `updatedAt` 을 기준으로 내림차순 정렬
+
+- `User` 의 이름과 댓글 개수 추가하여 `DTO` 변환
+
+3️⃣ DTO (`PlanWithUserAndCommentDto`)
+
+- 할일 제목 (title), 할일 내용 (contents), 댓글 개수 (commentCount), 일정 작성일 (createdAt), 일정 수정일 (updatedAt), 일정 작성 유저명 (userName)
+
+4️⃣ 응답 DTO (`PageResponseDto`)
+
+- `pageNumber`를 1부터 시작하도록 변환하여 반환.
+
+- 총 페이지 수(`totalPages`), 전체 항목 수(`totalElements`) 포함.
 
 
 ## 📚 Stacks
