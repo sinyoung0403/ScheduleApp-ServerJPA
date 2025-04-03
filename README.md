@@ -72,7 +72,9 @@ cd ScheduleApp-ServerJPA
 
 ## 🔗 ERD
 
-- 필수 과제를 기반입니다.
+- 도전 과제 기반으로 제작됐습니다.
+
+![ERD](https://github.com/user-attachments/assets/5292473f-7db2-405b-ab99-95b864376273)
 
 ---
 
