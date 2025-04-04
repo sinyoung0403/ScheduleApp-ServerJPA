@@ -504,6 +504,8 @@ create table comment
 
 ➕ 로그인 세션을 `@SessionAttribute` 로 구현
 
+➕ 초기 데이터 값 설정 코드 추가
+
 ## 📚 Stacks
 
 ### ✔️ Language & Framework

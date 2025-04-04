@@ -52,21 +52,19 @@ public class UserController {
   @PatchMapping
   public ResponseEntity<String> update(
           @Valid @RequestBody UpdateRequestDto dto,
-          HttpServletRequest request
+          @SessionAttribute(name = "loginUser") LoginDto loginDto
   ) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    userService.update(loginUser.getId(), dto);
-    return ResponseEntity.ok(loginUser.getId() + " 유저를 수정했습니다.");
+    userService.update(loginDto.getId(), dto);
+    return ResponseEntity.ok(" 유저를 수정했습니다. id = " + loginDto.getId());
   }
 
   /* 유저 삭제 */
   @DeleteMapping
   public ResponseEntity<String> delete(
           @Valid @RequestBody DeleteRequestDto dto,
-          HttpServletRequest request) {
-    LoginDto loginDto = (LoginDto) request.getSession().getAttribute("loginUser");
+          @SessionAttribute(name = "loginUser") LoginDto loginDto) {
     userService.delete(loginDto.getId(), dto);
-    return ResponseEntity.ok(loginDto.getId() + " 유저를 삭제했습니다.");
+    return ResponseEntity.ok("유저를 삭제했습니다. id = " + loginDto.getId());
   }
 
   /* 로그인 */
