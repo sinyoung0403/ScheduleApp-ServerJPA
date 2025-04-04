@@ -502,7 +502,7 @@ create table comment
 - (유저 삭제 -> 해당 유저의 할일, 댓글 삭제)
 - (할일 삭제 -> 해당 할일의 댓글 삭제)
 
-
+➕ 로그인 세션을 `@SessionAttribute` 로 구현
 
 ## 📚 Stacks
 
