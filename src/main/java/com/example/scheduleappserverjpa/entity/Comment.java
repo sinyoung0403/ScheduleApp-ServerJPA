@@ -33,6 +33,10 @@ public class Comment extends BaseEntity {
     this.content = dto.getContent();
   }
 
+  public Comment(String content) {
+    this.content = content;
+  }
+
   // 연관관계 설정
   public void setUser(User user) {
     this.user = user;
