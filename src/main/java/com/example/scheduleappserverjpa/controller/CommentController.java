@@ -7,7 +7,6 @@ import com.example.scheduleappserverjpa.dto.comment.response.FindResponseDto;
 import com.example.scheduleappserverjpa.dto.comment.request.UpdateRequestDto;
 import com.example.scheduleappserverjpa.dto.user.LoginDto;
 import com.example.scheduleappserverjpa.service.CommentService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +30,10 @@ public class CommentController {
   public ResponseEntity<CreateResponseDto> createComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
           @Valid @RequestBody CreateRequestDto dto,
-          HttpServletRequest request) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(planId, loginUser.getId(), dto));
+          @SessionAttribute(name = "loginUser") LoginDto loginDto
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(commentService.createComment(planId, loginDto.getId(), dto));
   }
 
   /* 일정의 댓글 전체 조회 */
@@ -57,11 +57,10 @@ public class CommentController {
   public ResponseEntity<String> updateComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
           @Positive(message = "양수만 허용합니다.") @PathVariable Long commentId,
-          @Valid @RequestBody UpdateRequestDto dto,
-          HttpServletRequest request
+          @SessionAttribute(name = "loginUser") LoginDto loginDto,
+          @Valid @RequestBody UpdateRequestDto dto
   ) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    commentService.updateComment(planId, loginUser.getId(), commentId, dto);
+    commentService.updateComment(planId, loginDto.getId(), commentId, dto);
     return ResponseEntity.ok("댓글 수정이 완료되었습니다.");
   }
 
@@ -71,11 +70,10 @@ public class CommentController {
   public ResponseEntity<String> deleteComment(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long planId,
           @Positive(message = "양수만 허용합니다.") @PathVariable Long commentId,
-          @Valid @RequestBody DeleteRequestDto dto,
-          HttpServletRequest request
+          @SessionAttribute(name = "loginUser") LoginDto loginDto,
+          @Valid @RequestBody DeleteRequestDto dto
   ) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    commentService.deleteComment(planId, loginUser.getId(), commentId, dto);
+    commentService.deleteComment(planId, loginDto.getId(), commentId, dto);
     return ResponseEntity.ok("댓글 삭제가 완료되었습니다.");
   }
 }

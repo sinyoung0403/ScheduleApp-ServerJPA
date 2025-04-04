@@ -31,10 +31,10 @@ public class PlanController {
   /* 일정 추가 */
   @PostMapping
   public ResponseEntity<SaveResponseDto> savePlan(
-          @Valid @RequestBody SaveRequestDto dto,
-          HttpServletRequest request) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    SaveResponseDto responseDto = planService.savePlan(dto, loginUser.getId());
+          @SessionAttribute(name = "loginUser") LoginDto loginDto,
+          @Valid @RequestBody SaveRequestDto dto
+  ) {
+    SaveResponseDto responseDto = planService.savePlan(dto, loginDto.getId());
     return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
   }
 
@@ -48,7 +48,8 @@ public class PlanController {
   /* 일정 단건 조회 */
   @GetMapping("/{id}")
   public ResponseEntity<FindResponseDto> findById(
-          @Positive(message = "양수만 허용합니다.") @PathVariable Long id) {
+          @Positive(message = "양수만 허용합니다.") @PathVariable Long id
+  ) {
     FindResponseDto findResponseDto = planService.findById(id);
     return ResponseEntity.ok(findResponseDto);
   }
@@ -57,11 +58,10 @@ public class PlanController {
   @PatchMapping("/{id}")
   public ResponseEntity<String> updatePlan(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long id,
-          @Valid @RequestBody UpdateRequestDto dto,
-          HttpServletRequest request
+          @SessionAttribute(name = "loginUser") LoginDto loginDto,
+          @Valid @RequestBody UpdateRequestDto dto
   ) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    planService.updatePlan(id, loginUser.getId(), dto);
+    planService.updatePlan(id, loginDto.getId(), dto);
     return ResponseEntity.ok("일정 수정이 완료되었습니다.");
   }
 
@@ -69,10 +69,10 @@ public class PlanController {
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deletePlan(
           @Positive(message = "양수만 허용합니다.") @PathVariable Long id,
-          @Valid @RequestBody DeleteRequestDto dto,
-          HttpServletRequest request) {
-    LoginDto loginUser = (LoginDto) request.getSession().getAttribute("loginUser");
-    planService.deletePlan(id, loginUser.getId(), dto);
+          @SessionAttribute(name = "loginUser") LoginDto loginDto,
+          @Valid @RequestBody DeleteRequestDto dto
+  ) {
+    planService.deletePlan(id, loginDto.getId(), dto);
     return ResponseEntity.ok("일정 삭제가 완료되었습니다.");
   }
 
